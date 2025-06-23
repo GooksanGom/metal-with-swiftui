@@ -18,6 +18,8 @@ final class ContentModel {
     
     private var startTime: CFTimeInterval = CACurrentMediaTime()
     
+    var rotationPerSecond: Float = 0.33
+    var rotation: Float = 0.0
     var brightness: Float = 1.0
     
     init() {
@@ -39,10 +41,9 @@ final class ContentModel {
     
     private func update(_ timeElapsed: Float) {
         
-        let rotationPerSecond: Float = 0.33
         let angle = rotationPerSecond * timeElapsed * 2.0 * .pi
-        
-        self.triangleRenderer.transform = .rotate(angle: angle, along: .init(0, 0, 1))
+        rotation += angle
+        self.triangleRenderer.transform = .rotate(angle: rotation, along: .init(0, 0, 1))
         
         self.triangleRenderer.brightness = self.brightness
     }
@@ -52,6 +53,7 @@ final class ContentModel {
         let currentTime = CACurrentMediaTime()
         let timeElapsed = Float(currentTime - startTime)
         update(timeElapsed)
+        startTime = currentTime
         
         guard let commandBuffer = commandQueue.makeCommandBuffer(),
               let drawable = view.currentDrawable,
@@ -71,16 +73,26 @@ struct ContentView: View {
     @State private var content = ContentModel()
     
     var body: some View {
+        @Bindable var content = content
         ZStack {
             MetalView(content.device,
                       onViewResized: content.onViewResized(_:_:),
                       onDraw: content.onDraw(_:))
             .ignoresSafeArea()
             
-            VStack(alignment: .leading) {
+            VStack {
                 Spacer()
-                Text("Brightness: \(content.brightness, format: .percent)")
-                Slider(value: $content.brightness, in: 0.0...1.0)
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Rotation/s: \(String(format: "%.2f", content.rotationPerSecond))")
+                    Slider(value: $content.rotationPerSecond, in: 0.0...1.5)
+                }
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Brightness: \(content.brightness, format: .percent)")
+                    
+                    Slider(value: $content.brightness, in: 0.0...1.0)
+                }
             }
             .padding()
         }
