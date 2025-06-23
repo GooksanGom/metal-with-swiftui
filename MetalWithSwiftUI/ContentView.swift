@@ -18,6 +18,8 @@ final class ContentModel {
     
     private var startTime: CFTimeInterval = CACurrentMediaTime()
     
+    var brightness: Float = 1.0
+    
     init() {
         
         let device = MTLCreateSystemDefaultDevice()!
@@ -35,14 +37,21 @@ final class ContentModel {
         self.triangleRenderer.viewAspectRatio = Float(size.width / size.height)
     }
     
-    func onDraw(_ view: MTKView) {
+    private func update(_ timeElapsed: Float) {
         
         let rotationPerSecond: Float = 0.33
-        let currentTime = CACurrentMediaTime()
-        let elapsedTime = currentTime - startTime
-        let angle: Float = rotationPerSecond * Float(elapsedTime) * 2.0 * .pi
+        let angle = rotationPerSecond * timeElapsed * 2.0 * .pi
         
         self.triangleRenderer.transform = .rotate(angle: angle, along: .init(0, 0, 1))
+        
+        self.triangleRenderer.brightness = self.brightness
+    }
+    
+    func onDraw(_ view: MTKView) {
+        
+        let currentTime = CACurrentMediaTime()
+        let timeElapsed = Float(currentTime - startTime)
+        update(timeElapsed)
         
         guard let commandBuffer = commandQueue.makeCommandBuffer(),
               let drawable = view.currentDrawable,
@@ -62,9 +71,19 @@ struct ContentView: View {
     @State private var content = ContentModel()
     
     var body: some View {
-        MetalView(content.device,
-                  onViewResized: content.onViewResized(_:_:),
-                  onDraw: content.onDraw(_:))
+        ZStack {
+            MetalView(content.device,
+                      onViewResized: content.onViewResized(_:_:),
+                      onDraw: content.onDraw(_:))
+            .ignoresSafeArea()
+            
+            VStack(alignment: .leading) {
+                Spacer()
+                Text("Brightness: \(content.brightness, format: .percent)")
+                Slider(value: $content.brightness, in: 0.0...1.0)
+            }
+            .padding()
+        }
     }
 }
 
