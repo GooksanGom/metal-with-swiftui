@@ -13,8 +13,10 @@ import SwiftUI
 final class ContentModel {
     
     let device: MTLDevice
-    let commandQueue: MTLCommandQueue
-    let triangleRenderer: TriangleRenderer
+    private let commandQueue: MTLCommandQueue
+    private let triangleRenderer: TriangleRenderer
+    
+    private var startTime: CFTimeInterval = CACurrentMediaTime()
     
     init() {
         
@@ -30,7 +32,7 @@ final class ContentModel {
     }
     
     func onViewResized(_ view: MTKView, _ size: CGSize) {
-        
+        self.triangleRenderer.viewAspectRatio = Float(size.width / size.height)
     }
     
     func onDraw(_ view: MTKView) {

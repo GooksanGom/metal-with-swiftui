@@ -75,15 +75,23 @@ final class TriangleRenderer {
         self.vertexBuffer = vertexBuffer
     }
     
+    var viewAspectRatio: Float = 1.0
     var transform: simd_float4x4 = .init(1.0)
     var brightness: Float = 1.0
     
     func draw(_ encoder: MTLRenderCommandEncoder) {
+     
+        var transform = self.transform
+        if viewAspectRatio > 1.0 {
+            transform = .scale(x: 1 / viewAspectRatio) * transform
+        } else {
+            transform = .scale(y: viewAspectRatio) * transform
+        }
         
         encoder.setRenderPipelineState(self.pipelineState)
         
         encoder.setVertexBuffer(self.vertexBuffer, offset: 0, index: 0)
-        encoder.setVertexBytes(&self.transform, length: MemoryLayout<simd_float4x4>.stride, index: 1)
+        encoder.setVertexBytes(&transform, length: MemoryLayout<simd_float4x4>.stride, index: 1)
         
         encoder.setFragmentBytes(&self.brightness, length: MemoryLayout<Float>.stride, index: 1)
         
