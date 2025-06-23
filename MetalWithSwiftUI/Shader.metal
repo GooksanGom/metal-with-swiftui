@@ -22,12 +22,10 @@ namespace hello_triangle {
     };
     
     vertex VertexOut vertex_function(Vertex in [[ stage_in ]],
-                                     constant float3x3 &transform [[ buffer(1) ]]) {
-        
-        auto pos = (transform * float3(in.position, 1)).xy;
+                                     constant float4x4 &transform [[ buffer(1) ]]) {
         
         VertexOut out;
-        out.position = float4(pos, 0, 1);
+        out.position = transform * float4(in.position, 0, 1);
         out.color = in.color;
         
         return out;
