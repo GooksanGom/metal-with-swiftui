@@ -37,6 +37,13 @@ final class ContentModel {
     
     func onDraw(_ view: MTKView) {
         
+        let rotationPerSecond: Float = 0.33
+        let currentTime = CACurrentMediaTime()
+        let elapsedTime = currentTime - startTime
+        let angle: Float = rotationPerSecond * Float(elapsedTime) * 2.0 * .pi
+        
+        self.triangleRenderer.transform = .rotate(angle: angle, along: .init(0, 0, 1))
+        
         guard let commandBuffer = commandQueue.makeCommandBuffer(),
               let drawable = view.currentDrawable,
               let renderPassDescriptor = view.currentRenderPassDescriptor,
