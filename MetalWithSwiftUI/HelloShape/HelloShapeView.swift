@@ -19,14 +19,12 @@ struct ControlView: View {
     
     @Environment(HelloShapeModel.self) private var content
     
-    @State private var shapeType: ShapeType = .triangle
-    
     var body: some View {
         @Bindable var content = content
         VStack {
             HStack {
                 Text("Shape: ")
-                Picker(selection: $shapeType) {
+                Picker(selection: $content.shapeType) {
                     ForEach(ShapeType.allCases, id: \.self) { type in
                         Text(type.rawValue)
                     }
