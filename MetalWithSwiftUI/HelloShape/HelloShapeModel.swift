@@ -1,8 +1,8 @@
 //
-//  ContentView.swift
+//  HelloShapeModel.swift
 //  MetalWithSwiftUI
 //
-//  Created by CurvSurf-SGKim on 6/23/25.
+//  Created by CurvSurf-SGKim on 6/24/25.
 //
 
 import Metal
@@ -10,7 +10,7 @@ import MetalKit
 import SwiftUI
 
 @Observable
-final class ContentModel {
+final class HelloShapeModel {
     
     let device: MTLDevice
     private let commandQueue: MTLCommandQueue
@@ -19,7 +19,7 @@ final class ContentModel {
     private var startTime: CFTimeInterval = CACurrentMediaTime()
     
     var rotationPerSecond: Float = 0.33
-    var rotation: Float = 0.0
+    var rotationAngle: Float = 0.0
     var brightness: Float = 1.0
     
     init() {
@@ -41,9 +41,9 @@ final class ContentModel {
     
     private func update(_ timeElapsed: Float) {
         
-        let angle = rotationPerSecond * timeElapsed * 2.0 * .pi
-        rotation += angle
-        self.triangleRenderer.transform = .rotate(angle: rotation, along: .init(0, 0, 1))
+        let deltaAngle = rotationPerSecond * timeElapsed * 2.0 * .pi
+        rotationAngle += deltaAngle
+        self.triangleRenderer.transform = .rotate(angle: rotationAngle, along: .init(0, 0, 1))
         
         self.triangleRenderer.brightness = self.brightness
     }
@@ -66,34 +66,4 @@ final class ContentModel {
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }
-}
-
-enum Content: String, CaseIterable {
-    case helloShape = "Hello Shape"
-}
-
-struct ContentView: View {
-    
-    @State private var selectedContent: Content?
-    
-    var body: some View {
-        NavigationSplitView {
-            List(Content.allCases, id: \.self, selection: $selectedContent) { content in
-                Text(content.rawValue)
-            }
-            .navigationTitle("Content")
-        } detail: {
-            if let selectedContent {
-                switch selectedContent {
-                case .helloShape: HelloShapeView()
-                }
-            } else {
-                Text("Select content from the left panel.")
-            }
-        }
-    }
-}
-
-#Preview {
-    ContentView()
 }
