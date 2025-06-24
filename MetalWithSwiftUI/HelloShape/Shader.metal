@@ -106,3 +106,51 @@ namespace hello_square {
         return float4(col, 1);
     }
 };
+
+namespace hello_circle {
+    
+    struct Vertex {
+        float2 position [[ attribute(0) ]];
+    };
+    
+    struct VertexOut {
+        float4 position [[ position ]];
+        float2 frag_coord;
+    };
+    
+    vertex VertexOut vertex_function(Vertex in [[ stage_in ]],
+                                     constant float4x4 &transform [[ buffer(1) ]],
+                                     constant float2 &resolution [[ buffer(2) ]]) {
+        auto npos = transform * float4(in.position, 0, 1);
+        auto frag_coord = (npos.xy * float2(1, -1) - 1) * 0.5 * resolution;
+        return {
+            .position = npos,
+            .frag_coord = frag_coord
+        };
+    }
+    
+    // reference: https://www.shadertoy.com/view/dstSWM
+    constant constexpr float MATH_PI = 3.14159265359;
+    constant constexpr float CIRCLE_COLUMNS = 16.0;
+    constant constexpr float TIME_SCALE = 0.08;
+
+    fragment float4 fragment_function(VertexOut in [[ stage_in ]],
+                                      constant float &brightness [[ buffer(1) ]],
+                                      constant float &time [[ buffer(2) ]],
+                                      constant float2 &resolution [[ buffer(3) ]]) {
+        // Normalized pixel coordinates (from 0 to 1)
+        float2 uv = in.frag_coord / resolution;
+        float circle_rows = CIRCLE_COLUMNS * resolution.y / resolution.x;
+        float scaled_time = time * TIME_SCALE;
+        
+        float circle = -cos((uv.x - scaled_time) * MATH_PI * 2 * CIRCLE_COLUMNS)
+                      * cos((uv.y + scaled_time) * MATH_PI * 2 * circle_rows);
+        
+        float step_circle = step(circle, -sin(time + uv.x - uv.y));
+        
+        float3 color1 = float3(0.07, 0.2, 0.48);
+        float3 color2 = float3(0.2, 0.45, 0.78);
+        
+        return float4(mix(color1, color2, step_circle) * brightness, 1);
+    }
+};
