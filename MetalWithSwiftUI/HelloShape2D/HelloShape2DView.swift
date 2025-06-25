@@ -1,5 +1,5 @@
 //
-//  HelloShapeView.swift
+//  HelloShape2DView.swift
 //  MetalWithSwiftUI
 //
 //  Created by CurvSurf-SGKim on 6/24/25.
@@ -15,9 +15,9 @@ enum ShapeType: String, CaseIterable {
     case circle = "Circle"
 }
 
-struct ControlView: View {
+fileprivate struct ControlView: View {
     
-    @Environment(HelloShapeModel.self) private var content
+    @Environment(HelloShape2DModel.self) private var content
     
     var body: some View {
         @Bindable var content = content
@@ -52,9 +52,9 @@ struct ControlView: View {
     }
 }
 
-struct HelloShapeView: View {
+struct HelloShape2DView: View {
     
-    @State private var content = HelloShapeModel()
+    @State private var content = HelloShape2DModel()
     
     var body: some View {
         ZStack {
@@ -74,5 +74,5 @@ struct HelloShapeView: View {
 }
 
 #Preview {
-    HelloShapeView()
+    HelloShape2DView()
 }

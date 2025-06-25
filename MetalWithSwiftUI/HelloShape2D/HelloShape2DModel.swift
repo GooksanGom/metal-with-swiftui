@@ -1,5 +1,5 @@
 //
-//  HelloShapeModel.swift
+//  HelloShape2DModel.swift
 //  MetalWithSwiftUI
 //
 //  Created by CurvSurf-SGKim on 6/24/25.
@@ -10,7 +10,7 @@ import MetalKit
 import SwiftUI
 
 @Observable
-final class HelloShapeModel {
+final class HelloShape2DModel {
     
     let device: MTLDevice
     private let commandQueue: MTLCommandQueue
@@ -21,7 +21,7 @@ final class HelloShapeModel {
     private var startTime: CFTimeInterval = CACurrentMediaTime()
     private var timeSinceStart: Float = 0.0
     
-    var rotationPerSecond: Float = 0.33
+    var rotationPerSecond: Float = 0.10
     var rotationAngle: Float = 0.0
     var brightness: Float = 1.0
     
