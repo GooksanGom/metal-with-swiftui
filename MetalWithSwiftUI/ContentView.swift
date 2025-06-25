@@ -11,6 +11,7 @@ import SwiftUI
 
 enum Content: String, CaseIterable {
     case helloShape2D = "Hello Shape 2D"
+    case helloShape3D = "Hello Shape 3D"
 }
 
 struct ContentView: View {
@@ -27,6 +28,7 @@ struct ContentView: View {
             if let selectedContent {
                 switch selectedContent {
                 case .helloShape2D: HelloShape2DView()
+                case .helloShape3D: HelloShape3DView()
                 }
             } else {
                 Text("Select content from the left panel.")

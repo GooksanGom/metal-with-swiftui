@@ -11,7 +11,7 @@ import SwiftUI
 
 enum Shape3DType: String, CaseIterable {
     // Add 3d shape types
-    case dummy
+    case cube
 }
 
 fileprivate struct ControlView: View {
