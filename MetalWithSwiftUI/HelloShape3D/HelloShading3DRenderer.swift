@@ -8,11 +8,6 @@
 import simd
 import Metal
 
-fileprivate struct Vertex {
-    let position: simd_float3
-    let normal: simd_float3
-    let texcoord: simd_float2
-}
 
 protocol HelloShading3DObject {
     var vertexBuffer: MTLBuffer { get }
@@ -24,6 +19,12 @@ protocol HelloShading3DObject {
 }
 
 final class HelloShading3DRenderer {
+    
+    struct Vertex {
+        let position: simd_float3
+        let normal: simd_float3
+        let texcoord: simd_float2
+    }
     
     private let pipelineState: MTLRenderPipelineState
     private let uniformBufferEncoder: MTLArgumentEncoder
