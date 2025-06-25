@@ -7,6 +7,17 @@
 
 import simd
 
+func clamp<C: Comparable>(_ x: C, min: C, max: C) -> C {
+    return Swift.max(Swift.min(x, max), min)
+}
+
+func orientedAngle(_ x: simd_float3,
+                   _ y: simd_float3,
+                   _ ref: simd_float3) -> Float {
+    let angle = acos(Swift.min(Swift.max(dot(x, y), -1.0), 1.0))
+    return simd_mix(angle, -angle, dot(ref, cross(x, y)) < 0 ? 1.0 : 0.0)
+}
+
 extension simd_float4x4 {
     
     static func scale(x: Float = 1.0, y: Float = 1.0, z: Float = 1.0) -> simd_float4x4 {
