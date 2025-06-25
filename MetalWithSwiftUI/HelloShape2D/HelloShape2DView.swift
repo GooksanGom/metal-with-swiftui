@@ -9,7 +9,7 @@ import Metal
 import MetalKit
 import SwiftUI
 
-enum ShapeType: String, CaseIterable {
+enum Shape2DType: String, CaseIterable {
     case triangle = "Triangle"
     case square = "Square"
     case circle = "Circle"
@@ -25,7 +25,7 @@ fileprivate struct ControlView: View {
             HStack {
                 Text("Shape: ")
                 Picker(selection: $content.shapeType) {
-                    ForEach(ShapeType.allCases, id: \.self) { type in
+                    ForEach(Shape2DType.allCases, id: \.self) { type in
                         Text(type.rawValue)
                     }
                 } label: {

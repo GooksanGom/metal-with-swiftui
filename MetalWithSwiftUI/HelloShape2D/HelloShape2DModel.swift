@@ -25,7 +25,7 @@ final class HelloShape2DModel {
     var rotationAngle: Float = 0.0
     var brightness: Float = 1.0
     
-    var shapeType: ShapeType = .triangle
+    var shapeType: Shape2DType = .triangle
     
     init() {
         
