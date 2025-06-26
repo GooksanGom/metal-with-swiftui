@@ -67,6 +67,20 @@ final class HelloShape3DModel {
         self.renderer.updateCameraPosition(trackball.eye)
     }
     
+    enum GestureEvent {
+        case began
+        case changed
+        case ended
+    }
+    
+    func onDragGesture(to location: simd_float2, _ event: GestureEvent) {
+        switch event {
+        case .began:    trackball.mouse(at: location, mode: .rotate)
+        case .changed:  trackball.motion(at: location)
+        case .ended:    trackball.mouse(at: location, mode: .none)
+        }
+    }
+    
     func onDraw(_ view: MTKView) {
         
         let currentTime = CACurrentMediaTime()

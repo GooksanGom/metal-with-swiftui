@@ -28,19 +28,48 @@ struct HelloShape3DView: View {
     
     @State private var content = HelloShape3DModel()
     
+    @GestureState private var dragging: Bool = false
+    
     var body: some View {
-        ZStack {
-            MetalView(content.device,
-                      onViewResized: content.onViewResized(_:_:),
-                      onDraw: content.onDraw(_:))
-            .ignoresSafeArea()
-            
-            VStack {
-                Spacer()
-                ControlView()
-                    .environment(content)
+        // GeometryReader tells you the size of the view where it contains (using the `geometry` variable).
+        GeometryReader { geometry in
+            ZStack {
+                MetalView(content.device,
+                          onViewResized: content.onViewResized(_:_:),
+                          onDraw: content.onDraw(_:))
+                .ignoresSafeArea()
+                .gesture(
+                    DragGesture()
+                        .onChanged { event in
+                            let location = simd_float2( Float(event.location.x),
+                                                       -Float(event.location.y))
+                            let viewSize = simd_float2(Float(geometry.size.width),
+                                                       Float(geometry.size.height))
+                            let normalized = 2.0 * (location / min(viewSize.x, viewSize.y)) - 1.0
+                            
+                            content.onDragGesture(to: normalized, dragging ? .changed : .began)
+                        }
+                        .updating($dragging) { _, state, _ in
+                            state = true
+                        }
+                        .onEnded { event in
+                            let location = simd_float2( Float(event.location.x),
+                                                       -Float(event.location.y))
+                            let viewSize = simd_float2(Float(geometry.size.width),
+                                                       Float(geometry.size.height))
+                            let normalized = 2.0 * (location / min(viewSize.x, viewSize.y)) - 1.0
+                            
+                            content.onDragGesture(to: normalized, .ended)
+                        }
+                )
+                
+                VStack {
+                    Spacer()
+                    ControlView()
+                        .environment(content)
+                }
+                .padding()
             }
-            .padding()
         }
     }
 }
