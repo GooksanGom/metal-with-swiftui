@@ -81,6 +81,14 @@ final class HelloShape3DModel {
         }
     }
     
+    func onRotateGesture(angle: Float, _ event: GestureEvent) {
+        switch event {
+        case .began:    trackball.mouse(at: .init(1, 0), mode: .roll)
+        case .changed:  trackball.motion(at: .init(cos(angle), sin(angle)))
+        case .ended:    trackball.mouse(at: .init(cos(angle), sin(angle)), mode: .roll)
+        }
+    }
+    
     func onDraw(_ view: MTKView) {
         
         let currentTime = CACurrentMediaTime()

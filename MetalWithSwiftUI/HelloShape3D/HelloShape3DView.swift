@@ -29,6 +29,7 @@ struct HelloShape3DView: View {
     @State private var content = HelloShape3DModel()
     
     @GestureState private var dragging: Bool = false
+    @GestureState private var rotating: Bool = false
     
     var body: some View {
         // GeometryReader tells you the size of the view where it contains (using the `geometry` variable).
@@ -60,6 +61,18 @@ struct HelloShape3DView: View {
                             let normalized = 2.0 * (location / min(viewSize.x, viewSize.y)) - 1.0
                             
                             content.onDragGesture(to: normalized, .ended)
+                        }
+                )
+                .gesture(
+                    RotateGesture()
+                        .onChanged { event in
+                            content.onRotateGesture(angle: Float(event.rotation.radians), rotating ? .changed : .began)
+                        }
+                        .updating($rotating) { _, state, _ in
+                            state = true
+                        }
+                        .onEnded { event in
+                            content.onRotateGesture(angle: Float(event.rotation.radians), .ended)
                         }
                 )
                 
